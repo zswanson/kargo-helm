@@ -7,38 +7,40 @@ spec:
   vars:
   - name: repoURL
     value: https://github.com/zswanson/kargo-helm.git
-  - name: branch
-    value: main
 
   steps:
   - uses: git-clone
     config:
       repoURL: ${{ vars.repoURL }}
       checkout:
-      - branch: ${{ vars.branch }}
-        path: ./out
-  - uses: git-clone
-    config:
-      repoURL: ${{ vars.repoURL }}
-      checkout:
       - commit: ${{ commitFrom( vars.repoURL ).ID }}
-        path: ./source
+        path: ./src
+      - branch: stage/${{ ctx.stage }}
+        create: true
+        path: ./out
+  - uses: git-clear
+    config:
+      path: ./out
   - uses: copy
     config:
-      inPath: ./source/base-a/feature-flags.yaml
-      outPath: ./out/env-a/${{ ctx.stage }}/feature-flags.yaml
+      inPath: ./src/charts/guestbook
+      outPath: ./out/charts/guestbook
+  - uses: copy
+    config:
+      inPath: ./src/env-a/${{ ctx.stage }}/values.yaml
+      outPath: ./out/values.yaml
+  - uses: copy
+    config:
+      inPath: ./src/base-a/feature-flags.yaml
+      outPath: ./out/feature-flags.yaml
   - uses: git-commit
     as: commit
     config:
       path: ./out
-      message: "updates ${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
+      message: "promote ${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
   - uses: git-push
     config:
       path: ./out
-  - uses: argocd-update
-    config:
-      apps:
-      - name: kargo-helm-${{ ctx.stage }}
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -50,35 +52,37 @@ spec:
   vars:
   - name: repoURL
     value: https://github.com/zswanson/kargo-helm.git
-  - name: branch
-    value: main
 
   steps:
   - uses: git-clone
     config:
       repoURL: ${{ vars.repoURL }}
       checkout:
-      - branch: ${{ vars.branch }}
-        path: ./out
-  - uses: git-clone
-    config:
-      repoURL: ${{ vars.repoURL }}
-      checkout:
       - commit: ${{ commitFrom( vars.repoURL ).ID }}
-        path: ./source
+        path: ./src
+      - branch: stage/${{ ctx.stage }}
+        create: true
+        path: ./out
+  - uses: git-clear
+    config:
+      path: ./out
   - uses: copy
     config:
-      inPath: ./source/base-b/feature-flags.yaml
-      outPath: ./out/env-b/${{ ctx.stage }}/feature-flags.yaml
+      inPath: ./src/charts/guestbook
+      outPath: ./out/charts/guestbook
+  - uses: copy
+    config:
+      inPath: ./src/env-b/${{ ctx.stage }}/values.yaml
+      outPath: ./out/values.yaml
+  - uses: copy
+    config:
+      inPath: ./src/base-b/feature-flags.yaml
+      outPath: ./out/feature-flags.yaml
   - uses: git-commit
     as: commit
     config:
       path: ./out
-      message: "updates ${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
+      message: "promote ${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
   - uses: git-push
     config:
       path: ./out
-  - uses: argocd-update
-    config:
-      apps:
-      - name: kargo-helm-${{ ctx.stage }}

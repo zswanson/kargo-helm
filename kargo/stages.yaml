@@ -7,6 +7,7 @@ metadata:
     kargo.akuity.io/color: green
     kargo.akuity.io/argocd-context: '[{"name":"kargo-helm-app-a-dev","namespace":"argocd"}]'
 spec:
+  autoPromotionEnabled: true
   requestedFreight:
   - origin:
       kind: Warehouse
@@ -98,6 +99,7 @@ metadata:
     kargo.akuity.io/color: green
     kargo.akuity.io/argocd-context: '[{"name":"kargo-helm-app-b-dev","namespace":"argocd"}]'
 spec:
+  autoPromotionEnabled: true
   requestedFreight:
   - origin:
       kind: Warehouse

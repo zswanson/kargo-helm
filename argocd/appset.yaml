@@ -5,28 +5,30 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/zswanson/kargo-helm.git
-      revision: HEAD
-      directories:
-      - path: env-a/*
+  - list:
+      elements:
+      - stage: app-a-dev
+      - stage: app-a-staging
+      - stage: app-a-prod-us
+      - stage: app-a-prod-eu
   template:
     metadata:
-      name: kargo-helm-{{path.basename}}
+      name: kargo-helm-{{stage}}
       annotations:
-        kargo.akuity.io/authorized-stage: kargo-helm:{{path.basename}}
+        kargo.akuity.io/authorized-stage: kargo-helm:{{stage}}
     spec:
       destination:
-        namespace: kargo-helm-{{path.basename}}
+        namespace: kargo-helm-{{stage}}
         name: demo
       project: kargo-helm
       source:
         path: charts/guestbook
         repoURL: https://github.com/zswanson/kargo-helm.git
+        targetRevision: stage/{{stage}}
         helm:
           valueFiles:
-          - "/env-a/{{path.basename}}/values.yaml"
-          - "/env-a/{{path.basename}}/feature-flags.yaml"
+          - /values.yaml
+          - /feature-flags.yaml
 
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -36,25 +38,26 @@ metadata:
   namespace: argocd
 spec:
   generators:
-  - git:
-      repoURL: https://github.com/zswanson/kargo-helm.git
-      revision: HEAD
-      directories:
-      - path: env-b/*
+  - list:
+      elements:
+      - stage: app-b-dev
+      - stage: app-b-staging
+      - stage: app-b-prod-us
   template:
     metadata:
-      name: kargo-helm-{{path.basename}}
+      name: kargo-helm-{{stage}}
       annotations:
-        kargo.akuity.io/authorized-stage: kargo-helm:{{path.basename}}
+        kargo.akuity.io/authorized-stage: kargo-helm:{{stage}}
     spec:
       destination:
-        namespace: kargo-helm-{{path.basename}}
+        namespace: kargo-helm-{{stage}}
         name: demo
       project: kargo-helm
       source:
         path: charts/guestbook
         repoURL: https://github.com/zswanson/kargo-helm.git
+        targetRevision: stage/{{stage}}
         helm:
           valueFiles:
-          - "/env-b/{{path.basename}}/values.yaml"
-          - "/env-b/{{path.basename}}/feature-flags.yaml"
+          - /values.yaml
+          - /feature-flags.yaml
