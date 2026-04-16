@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: kargo-helm
+  name: kargo-helm-appA
   namespace: argocd
 spec:
   generators:
   - git:
-      repoURL: https://github.com/akuity/kargo-helm.git
+      repoURL: https://github.com/zswanson/kargo-helm.git
       revision: HEAD
       directories:
-      - path: env/*
+      - path: envA/*
   template:
     metadata:
       name: kargo-helm-{{path.basename}}
@@ -22,8 +22,39 @@ spec:
       project: kargo-helm
       source:
         path: charts/guestbook
-        repoURL: https://github.com/akuity/kargo-helm.git
+        repoURL: https://github.com/zswanson/kargo-helm.git
         helm:
           valueFiles:
-          - "/env/{{path.basename}}/values.yaml"
-          - "/env/{{path.basename}}/feature-flags.yaml"
+          - "/envA/{{path.basename}}/values.yaml"
+          - "/envA/{{path.basename}}/feature-flags.yaml"
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kargo-helm-appB
+  namespace: argocd
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/zswanson/kargo-helm.git
+      revision: HEAD
+      directories:
+      - path: envB/*
+  template:
+    metadata:
+      name: kargo-helm-{{path.basename}}
+      annotations:
+        kargo.akuity.io/authorized-stage: kargo-helm:{{path.basename}}
+    spec:
+      destination:
+        namespace: kargo-helm-{{path.basename}}
+        name: demo
+      project: kargo-helm
+      source:
+        path: charts/guestbook
+        repoURL: https://github.com/zswanson/kargo-helm.git
+        helm:
+          valueFiles:
+          - "/envB/{{path.basename}}/values.yaml"
+          - "/envB/{{path.basename}}/feature-flags.yaml"
