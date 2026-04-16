@@ -1,3 +1,4 @@
 featureFlags:
-  FEATURE_DARK_MODE: enabled
+  FEATURE_DARK_MODE: disabled
   FEATURE_NOTIFICATIONS: enabled
+  FEATURE_SEARCH: enabled
