@@ -1,8 +1,8 @@
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
-  name: app-a
-  namespace: kargo-helm
+  name: main
+  namespace: app-a
 spec:
   subscriptions:
   - git:
@@ -17,8 +17,8 @@ spec:
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
-  name: app-b
-  namespace: kargo-helm
+  name: main
+  namespace: app-b
 spec:
   subscriptions:
   - git:

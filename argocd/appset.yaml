@@ -1,63 +1,63 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: kargo-helm-app-a
+  name: app-a
   namespace: argocd
 spec:
   generators:
   - list:
       elements:
-      - stage: app-a-dev
-      - stage: app-a-staging
-      - stage: app-a-prod-us
-      - stage: app-a-prod-eu
+      - stage: dev
+      - stage: staging
+      - stage: prod-us
+      - stage: prod-eu
   template:
     metadata:
-      name: kargo-helm-{{stage}}
+      name: app-a-{{stage}}
       annotations:
-        kargo.akuity.io/authorized-stage: kargo-helm:{{stage}}
+        kargo.akuity.io/authorized-stage: app-a:{{stage}}
     spec:
       destination:
-        namespace: kargo-helm-{{stage}}
+        namespace: app-a-{{stage}}
         name: demo
       project: kargo-helm
       source:
-        path: charts/guestbook
+        path: app-a/charts/guestbook
         repoURL: https://github.com/zswanson/kargo-helm.git
         targetRevision: stage/{{stage}}
         helm:
           valueFiles:
-          - /values.yaml
-          - /feature-flags.yaml
+          - /app-a/values.yaml
+          - /app-a/feature-flags.yaml
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: kargo-helm-app-b
+  name: app-b
   namespace: argocd
 spec:
   generators:
   - list:
       elements:
-      - stage: app-b-dev
-      - stage: app-b-staging
-      - stage: app-b-prod-us
+      - stage: dev
+      - stage: staging
+      - stage: prod-us
   template:
     metadata:
-      name: kargo-helm-{{stage}}
+      name: app-b-{{stage}}
       annotations:
-        kargo.akuity.io/authorized-stage: kargo-helm:{{stage}}
+        kargo.akuity.io/authorized-stage: app-b:{{stage}}
     spec:
       destination:
-        namespace: kargo-helm-{{stage}}
+        namespace: app-b-{{stage}}
         name: demo
       project: kargo-helm
       source:
-        path: charts/guestbook
+        path: app-b/charts/guestbook
         repoURL: https://github.com/zswanson/kargo-helm.git
         targetRevision: stage/{{stage}}
         helm:
           valueFiles:
-          - /values.yaml
-          - /feature-flags.yaml
+          - /app-b/values.yaml
+          - /app-b/feature-flags.yaml

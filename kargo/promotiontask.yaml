@@ -1,8 +1,8 @@
 apiVersion: kargo.akuity.io/v1alpha1
 kind: PromotionTask
 metadata:
-  name: promote-app-a
-  namespace: kargo-helm
+  name: promote
+  namespace: app-a
 spec:
   vars:
   - name: repoURL
@@ -13,31 +13,30 @@ spec:
     config:
       repoURL: ${{ vars.repoURL }}
       checkout:
+      - branch: main
+        path: ./main
       - commit: ${{ commitFrom( vars.repoURL ).ID }}
-        path: ./src
+        path: ./freight
       - branch: stage/${{ ctx.stage }}
         create: true
         path: ./out
-  - uses: git-clear
-    config:
-      path: ./out
   - uses: copy
     config:
-      inPath: ./src/charts/guestbook
-      outPath: ./out/charts/guestbook
+      inPath: ./main/charts/guestbook
+      outPath: ./out/app-a/charts/guestbook
   - uses: copy
     config:
-      inPath: ./src/env-a/${{ ctx.stage }}/values.yaml
-      outPath: ./out/values.yaml
+      inPath: ./main/env-a/${{ ctx.stage }}/values.yaml
+      outPath: ./out/app-a/values.yaml
   - uses: copy
     config:
-      inPath: ./src/base-a/feature-flags.yaml
-      outPath: ./out/feature-flags.yaml
+      inPath: ./freight/base-a/feature-flags.yaml
+      outPath: ./out/app-a/feature-flags.yaml
   - uses: git-commit
     as: commit
     config:
       path: ./out
-      message: "promote ${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
+      message: "promote app-a/${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
   - uses: git-push
     config:
       path: ./out
@@ -46,8 +45,8 @@ spec:
 apiVersion: kargo.akuity.io/v1alpha1
 kind: PromotionTask
 metadata:
-  name: promote-app-b
-  namespace: kargo-helm
+  name: promote
+  namespace: app-b
 spec:
   vars:
   - name: repoURL
@@ -58,31 +57,30 @@ spec:
     config:
       repoURL: ${{ vars.repoURL }}
       checkout:
+      - branch: main
+        path: ./main
       - commit: ${{ commitFrom( vars.repoURL ).ID }}
-        path: ./src
+        path: ./freight
       - branch: stage/${{ ctx.stage }}
         create: true
         path: ./out
-  - uses: git-clear
-    config:
-      path: ./out
   - uses: copy
     config:
-      inPath: ./src/charts/guestbook
-      outPath: ./out/charts/guestbook
+      inPath: ./main/charts/guestbook
+      outPath: ./out/app-b/charts/guestbook
   - uses: copy
     config:
-      inPath: ./src/env-b/${{ ctx.stage }}/values.yaml
-      outPath: ./out/values.yaml
+      inPath: ./main/env-b/${{ ctx.stage }}/values.yaml
+      outPath: ./out/app-b/values.yaml
   - uses: copy
     config:
-      inPath: ./src/base-b/feature-flags.yaml
-      outPath: ./out/feature-flags.yaml
+      inPath: ./freight/base-b/feature-flags.yaml
+      outPath: ./out/app-b/feature-flags.yaml
   - uses: git-commit
     as: commit
     config:
       path: ./out
-      message: "promote ${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
+      message: "promote app-b/${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
   - uses: git-push
     config:
       path: ./out
