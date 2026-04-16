@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: kargo-helm-appA
+  name: kargo-helm-app-a
   namespace: argocd
 spec:
   generators:
@@ -9,7 +9,7 @@ spec:
       repoURL: https://github.com/zswanson/kargo-helm.git
       revision: HEAD
       directories:
-      - path: envA/*
+      - path: env-a/*
   template:
     metadata:
       name: kargo-helm-{{path.basename}}
@@ -25,14 +25,14 @@ spec:
         repoURL: https://github.com/zswanson/kargo-helm.git
         helm:
           valueFiles:
-          - "/envA/{{path.basename}}/values.yaml"
-          - "/envA/{{path.basename}}/feature-flags.yaml"
+          - "/env-a/{{path.basename}}/values.yaml"
+          - "/env-a/{{path.basename}}/feature-flags.yaml"
 
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: kargo-helm-appB
+  name: kargo-helm-app-b
   namespace: argocd
 spec:
   generators:
@@ -40,7 +40,7 @@ spec:
       repoURL: https://github.com/zswanson/kargo-helm.git
       revision: HEAD
       directories:
-      - path: envB/*
+      - path: env-b/*
   template:
     metadata:
       name: kargo-helm-{{path.basename}}
@@ -56,5 +56,5 @@ spec:
         repoURL: https://github.com/zswanson/kargo-helm.git
         helm:
           valueFiles:
-          - "/envB/{{path.basename}}/values.yaml"
-          - "/envB/{{path.basename}}/feature-flags.yaml"
+          - "/env-b/{{path.basename}}/values.yaml"
+          - "/env-b/{{path.basename}}/feature-flags.yaml"

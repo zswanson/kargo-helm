@@ -1,7 +1,7 @@
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
-  name: appA
+  name: app-a
   namespace: kargo-helm
 spec:
   subscriptions:
@@ -11,13 +11,13 @@ spec:
       discoveryLimit: 20
       repoURL: https://github.com/zswanson/kargo-helm.git
       includePaths:
-      - baseA/feature-flags.yaml
+      - base-a/feature-flags.yaml
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
-  name: appB
+  name: app-b
   namespace: kargo-helm
 spec:
   subscriptions:
@@ -27,4 +27,4 @@ spec:
       discoveryLimit: 20
       repoURL: https://github.com/zswanson/kargo-helm.git
       includePaths:
-      - baseB/feature-flags.yaml
+      - base-b/feature-flags.yaml

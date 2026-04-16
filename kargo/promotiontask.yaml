@@ -1,7 +1,7 @@
 apiVersion: kargo.akuity.io/v1alpha1
 kind: PromotionTask
 metadata:
-  name: promote-appA
+  name: promote-app-a
   namespace: kargo-helm
 spec:
   vars:
@@ -25,8 +25,8 @@ spec:
         path: ./source
   - uses: copy
     config:
-      inPath: ./source/baseA/feature-flags.yaml
-      outPath: ./out/envA/${{ ctx.stage }}/feature-flags.yaml
+      inPath: ./source/base-a/feature-flags.yaml
+      outPath: ./out/env-a/${{ ctx.stage }}/feature-flags.yaml
   - uses: git-commit
     as: commit
     config:
@@ -44,7 +44,7 @@ spec:
 apiVersion: kargo.akuity.io/v1alpha1
 kind: PromotionTask
 metadata:
-  name: promote-appB
+  name: promote-app-b
   namespace: kargo-helm
 spec:
   vars:
@@ -68,8 +68,8 @@ spec:
         path: ./source
   - uses: copy
     config:
-      inPath: ./source/baseB/feature-flags.yaml
-      outPath: ./out/envB/${{ ctx.stage }}/feature-flags.yaml
+      inPath: ./source/base-b/feature-flags.yaml
+      outPath: ./out/env-b/${{ ctx.stage }}/feature-flags.yaml
   - uses: git-commit
     as: commit
     config:
