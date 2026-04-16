@@ -106,6 +106,9 @@ spec:
       steps:
       - task:
           name: promote
+  verification:
+    analysisTemplates:
+    - name: wait
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -128,6 +131,9 @@ spec:
       steps:
       - task:
           name: promote
+  verification:
+    analysisTemplates:
+    - name: wait
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
