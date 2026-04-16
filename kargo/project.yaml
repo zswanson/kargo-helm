@@ -4,6 +4,10 @@ metadata:
   name: app-a
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
+spec:
+  promotionPolicies:
+  - stage: dev
+    autoPromotionEnabled: true
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -12,3 +16,7 @@ metadata:
   name: app-b
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
+spec:
+  promotionPolicies:
+  - stage: dev
+    autoPromotionEnabled: true

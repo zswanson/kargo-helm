@@ -6,7 +6,6 @@ metadata:
   annotations:
     kargo.akuity.io/color: green
 spec:
-  autoPromotionEnabled: true
   requestedFreight:
   - origin:
       kind: Warehouse
@@ -94,7 +93,6 @@ metadata:
   annotations:
     kargo.akuity.io/color: green
 spec:
-  autoPromotionEnabled: true
   requestedFreight:
   - origin:
       kind: Warehouse
