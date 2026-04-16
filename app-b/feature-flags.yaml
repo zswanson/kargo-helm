@@ -1,0 +1,3 @@
+featureFlags:
+  FEATURE_DARK_MODE: enabled
+  FEATURE_NOTIFICATIONS: disabled
