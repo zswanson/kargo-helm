@@ -19,7 +19,7 @@ spec:
     spec:
       destination:
         namespace: app-a-{{stage}}
-        name: demo
+        server: https://kubernetes.default.svc
       project: kargo-helm
       source:
         path: app-a/charts/guestbook
@@ -29,6 +29,12 @@ spec:
           valueFiles:
           - /app-a/values.yaml
           - /app-a/feature-flags.yaml
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
 
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -51,7 +57,7 @@ spec:
     spec:
       destination:
         namespace: app-b-{{stage}}
-        name: demo
+        server: https://kubernetes.default.svc
       project: kargo-helm
       source:
         path: app-b/charts/guestbook
@@ -61,3 +67,9 @@ spec:
           valueFiles:
           - /app-b/values.yaml
           - /app-b/feature-flags.yaml
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true

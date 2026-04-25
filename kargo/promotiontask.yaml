@@ -40,6 +40,10 @@ spec:
   - uses: git-push
     config:
       path: ./out
+  - uses: argocd-wait
+    config:
+      apps:
+      - name: app-a-${{ ctx.stage }}
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
@@ -84,3 +88,7 @@ spec:
   - uses: git-push
     config:
       path: ./out
+  - uses: argocd-wait
+    config:
+      apps:
+      - name: app-b-${{ ctx.stage }}
