@@ -9,6 +9,16 @@ spec:
     value: https://github.com/zswanson/kargo-helm.git
 
   steps:
+  - uses: set-metadata
+    config:
+      updates:
+      - kind: Freight
+        name: ${{ ctx.targetFreight.name }}
+        values:
+          commitMessage: ${{ commitFrom( vars.repoURL ).Message }}
+          commitUrl: https://github.com/zswanson/kargo-helm/commit/${{ commitFrom( vars.repoURL ).ID }}
+          author: ${{ commitFrom( vars.repoURL ).Author }}
+
   - uses: git-clone
     config:
       repoURL: ${{ vars.repoURL }}
@@ -20,26 +30,59 @@ spec:
       - branch: stage/${{ ctx.stage }}
         create: true
         path: ./out
+
   - uses: copy
     config:
       inPath: ./main/charts/guestbook
       outPath: ./out/app-a/charts/guestbook
+
   - uses: copy
     config:
       inPath: ./main/env-a/${{ ctx.stage }}/values.yaml
       outPath: ./out/app-a/values.yaml
+
   - uses: copy
     config:
       inPath: ./freight/base-a/feature-flags.yaml
       outPath: ./out/app-a/feature-flags.yaml
+
   - uses: git-commit
-    as: commit
     config:
       path: ./out
       message: "promote app-a/${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
+
   - uses: git-push
+    as: push
     config:
       path: ./out
+      generateTargetBranch: true
+
+  - uses: git-open-pr
+    as: open-pr
+    config:
+      repoURL: ${{ vars.repoURL }}
+      sourceBranch: ${{ task.outputs['push'].branch }}
+      targetBranch: stage/${{ ctx.stage }}
+      title: "promote app-a/${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
+      labels: ["kargo", "app-a", "${{ ctx.stage }}"]
+
+  - if: ${{ ctx.stage == 'dev' || ctx.stage == 'staging' }}
+    uses: git-merge-pr
+    config:
+      repoURL: ${{ vars.repoURL }}
+      prNumber: ${{ task.outputs['open-pr'].pr.id }}
+      mergeMethod: squash
+      wait: true
+
+  - if: ${{ ctx.stage == 'prod-us' || ctx.stage == 'prod-eu' }}
+    uses: git-wait-for-pr
+    as: wait-for-pr
+    retry:
+      timeout: 24h
+    config:
+      repoURL: ${{ vars.repoURL }}
+      prNumber: ${{ task.outputs['open-pr'].pr.id }}
+
   - uses: argocd-wait
     config:
       apps:
@@ -57,6 +100,16 @@ spec:
     value: https://github.com/zswanson/kargo-helm.git
 
   steps:
+  - uses: set-metadata
+    config:
+      updates:
+      - kind: Freight
+        name: ${{ ctx.targetFreight.name }}
+        values:
+          commitMessage: ${{ commitFrom( vars.repoURL ).Message }}
+          commitUrl: https://github.com/zswanson/kargo-helm/commit/${{ commitFrom( vars.repoURL ).ID }}
+          author: ${{ commitFrom( vars.repoURL ).Author }}
+
   - uses: git-clone
     config:
       repoURL: ${{ vars.repoURL }}
@@ -68,26 +121,59 @@ spec:
       - branch: stage/${{ ctx.stage }}
         create: true
         path: ./out
+
   - uses: copy
     config:
       inPath: ./main/charts/guestbook
       outPath: ./out/app-b/charts/guestbook
+
   - uses: copy
     config:
       inPath: ./main/env-b/${{ ctx.stage }}/values.yaml
       outPath: ./out/app-b/values.yaml
+
   - uses: copy
     config:
       inPath: ./freight/base-b/feature-flags.yaml
       outPath: ./out/app-b/feature-flags.yaml
+
   - uses: git-commit
-    as: commit
     config:
       path: ./out
       message: "promote app-b/${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
+
   - uses: git-push
+    as: push
     config:
       path: ./out
+      generateTargetBranch: true
+
+  - uses: git-open-pr
+    as: open-pr
+    config:
+      repoURL: ${{ vars.repoURL }}
+      sourceBranch: ${{ task.outputs['push'].branch }}
+      targetBranch: stage/${{ ctx.stage }}
+      title: "promote app-b/${{ ctx.stage }} from ${{ commitFrom( vars.repoURL ).ID }}"
+      labels: ["kargo", "app-b", "${{ ctx.stage }}"]
+
+  - if: ${{ ctx.stage == 'dev' || ctx.stage == 'staging' }}
+    uses: git-merge-pr
+    config:
+      repoURL: ${{ vars.repoURL }}
+      prNumber: ${{ task.outputs['open-pr'].pr.id }}
+      mergeMethod: squash
+      wait: true
+
+  - if: ${{ ctx.stage == 'prod-us' || ctx.stage == 'prod-eu' }}
+    uses: git-wait-for-pr
+    as: wait-for-pr
+    retry:
+      timeout: 24h
+    config:
+      repoURL: ${{ vars.repoURL }}
+      prNumber: ${{ task.outputs['open-pr'].pr.id }}
+
   - uses: argocd-wait
     config:
       apps:

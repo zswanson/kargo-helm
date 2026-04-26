@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  application.links: |
+    - url: http://localhost:31081/project/{{index .app.metadata.labels "kargo.akuity.io/project"}}/stage/{{index .app.metadata.labels "kargo.akuity.io/stage"}}
+      title: Kargo Stage
+      description: View this stage in the Kargo dashboard
+      icon.class: fa-rocket
+      if: app.metadata.labels["kargo.akuity.io/project"] != nil

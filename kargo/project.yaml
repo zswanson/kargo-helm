@@ -16,6 +16,15 @@ spec:
   - stageSelector:
       name: dev
     autoPromotionEnabled: true
+  - stageSelector:
+      name: staging
+    autoPromotionEnabled: true
+  - stageSelector:
+      name: prod-us
+    autoPromotionEnabled: true
+  - stageSelector:
+      name: prod-eu
+    autoPromotionEnabled: true
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
